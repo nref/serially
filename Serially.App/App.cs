@@ -39,8 +39,8 @@ namespace Serially.App
 
     public static async Task Main(string[] args)
     {
-      IPortService portService = new PortService();
-      ISerialPortService port = new SerialPortService(portService);
+      IPortChangeService portChangeService = new PortChangeService();
+      ISerialPortService port = new SerialPortService(portChangeService);
 
       if (args.Length == 0)
       {

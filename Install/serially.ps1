@@ -1,5 +1,6 @@
 # System.IO.Ports.SerialPorts is seriously broken, so we use a custom serial lib  
 using namespace Serially.Core
+using namespace Serially.Core.Services
 Add-Type -Path "./Serially.Core.dll"
 
 function Await-Task {
@@ -14,11 +15,11 @@ function Await-Task {
     }
 }
 
-function try_open_port([SerialPort] $port, [SerialConfig] $config) 
+function try_open_port([SerialPortService] $port, [SerialConfig] $config) 
 {
     try
     {
-        $port.Open($config) | Await-Task
+        $port.OpenAsync($config) | Await-Task
     }
     catch [Exception]
     {
@@ -33,7 +34,8 @@ function wait_for_port([System.String] $name)
     $config = New-Object SerialConfig
     $config.PortName = $name
     $config.BaudRate = 1000000
-    $script:port = New-Object SerialPort
+    $portChangeService = New-Object PortChangeService
+    $script:port = New-Object SerialPortService $portChangeService
 
     $activity = "Waiting for $($config.PortName)";
     Write-Output $activity
@@ -163,9 +165,10 @@ function run_cli([System.String] $port_name)
             if ($escaped)
             {
                 # Generate ASCII Escape sequence e.g. ESC[A => Arrow Up
-                $script:port.WriteChar($esc)
-                $script:port.WriteChar($left_bracket)
-                $script:port.WriteChar($escaped_char)
+                # must assign to void to prevent echo
+                $void = $script:port.WriteCharAsync($esc) | Await-Task
+                $void = $script:port.WriteCharAsync($left_bracket) | Await-Task
+                $void = $script:port.WriteCharAsync($escaped_char) | Await-Task
                 continue
             }
 
@@ -173,12 +176,12 @@ function run_cli([System.String] $port_name)
             if ($mapped)
             {
                 # This char must be mapped to ASCII e.g. ConsoleKey Delete == 46 and ASCII DEL == 127
-                $script:port.WriteChar($mapped_char)
+                $void = $script:port.WriteCharAsync($mapped_char) | Await-Task
                 continue
             }
 
             # No mapping or escaping needed
-            $script:port.WriteChar($keyInfo.KeyChar)
+            $void = $script:port.WriteCharAsync($keyInfo.KeyChar) | Await-Task
 
         } while ($script:port.IsOpen)
     }

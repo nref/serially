@@ -101,9 +101,9 @@ namespace Serially.Core.Services
     private ISerialStreamCtrl _streamCtrl;
     private string _currentPortName;
 
-    private readonly IPortService _portService;
+    private readonly IPortChangeService _portService;
 
-    public SerialPortService(IPortService portService)
+    public SerialPortService(IPortChangeService portService)
     {
       _portService = portService;
       _portService.PortRemoved += HandlePortRemoved_;

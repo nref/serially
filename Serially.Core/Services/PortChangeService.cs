@@ -9,7 +9,7 @@ namespace Serially.Core.Services
   public delegate void PortsChangedEvent(HashSet<string> previous, HashSet<string> current);
   public delegate void PortChangedEvent(string port);
 
-  public interface IPortService
+  public interface IPortChangeService
   {
     event PortChangedEvent PortAdded;
     event PortChangedEvent PortRemoved;
@@ -25,7 +25,7 @@ namespace Serially.Core.Services
   /// <summary>
   /// Notifies of add/remove of COM ports
   /// </summary>
-  public class PortService : IPortService
+  public class PortChangeService : IPortChangeService
   {
     public event PortChangedEvent PortAdded;
     public event PortChangedEvent PortRemoved;
@@ -48,7 +48,7 @@ namespace Serially.Core.Services
 
     private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
-    public PortService()
+    public PortChangeService()
     {
       Task.Run(async () => await Watch(_cts.Token), _cts.Token);
     }
