@@ -8,6 +8,11 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <VersionPrefix>1.0.1</VersionPrefix>
+    <VersionSuffix></VersionSuffix>
+  </PropertyGroup>
+  
   <ItemGroup>
     <None Include="..\LICENSE.txt">
       <Pack>True</Pack>
