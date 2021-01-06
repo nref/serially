@@ -50,7 +50,7 @@ Using the ```tail``` option, Serially.App can also just tail the device i.e. for
 
 ## PowerShell
 
-The ```Script/``` folder contains ```repl.ps1``` and ```tail.ps1``` which offer the same features as ```Serially.App.exe```
+The ```Install/``` folder contains ```repl.ps1``` and ```tail.ps1``` which offer the same features as ```Serially.App.exe```
 
 ## NuGet
 
