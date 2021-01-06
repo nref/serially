@@ -33,6 +33,13 @@ Examples:
         Just tail COM2: serially tail COM2
 ```
 
+## Prebuilt Release
+
+A prebuilt binary is in the ```Install/``` folder. Copy ```Install/``` to wherever you'd like to run Serially from.
+
+The ```Install/``` folder contains ```repl.ps1``` and ```tail.ps1``` which offer similar features as ```Serially.App.exe```
+for use in PowerShell.
+
 ## Serially.Core
 
 Serially.Core is a pure .NET 5.0 library for serial communication. 
@@ -47,10 +54,6 @@ Basic ASCII key sequence escaping and mapping is provided. The following basic s
 - Delete
 
 Using the ```tail``` option, Serially.App can also just tail the device i.e. for logging.
-
-## PowerShell
-
-The ```Install/``` folder contains ```repl.ps1``` and ```tail.ps1``` which offer the same features as ```Serially.App.exe```
 
 ## NuGet
 
