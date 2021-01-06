@@ -1,4 +1,5 @@
 ﻿using Serially.Core;
+using Serially.Core.Services;
 using System;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,6 +39,9 @@ namespace Serially.App
 
     public static async Task Main(string[] args)
     {
+      IPortService portService = new PortService();
+      ISerialPortService port = new SerialPortService(portService);
+
       if (args.Length == 0)
       {
         PrintHelp();
@@ -48,30 +52,32 @@ namespace Serially.App
       if (args.Length == 1)
       {
         config.PortName = args[0];
-        await new Repl(config).Run();
+        await new ReplService(port, config).RunAsync();
         return;
       }
 
       if (args.Length > 1)
       {
-        bool tail = args[0] == "tail";
-        bool repl = args[0] == "repl";
-        bool help = args[0] == "help";
+        bool request_tail = args[0] == "tail";
+        bool request_repl = args[0] == "repl";
+        bool request_help = args[0] == "help";
         config.PortName = args[1];
 
-        if (tail)
+        IReplService repl = new ReplService(port, config);
+
+        if (request_tail)
         {
-          await new Repl(config).Tail();
+          await repl.TailAsync();
           return;
         }
 
-        if (repl)
+        if (request_repl)
         {
-          await new Repl(config).Run();
+          await repl.RunAsync();
           return;
         }
 
-        if (!help)
+        if (!request_help)
         {
           PrintError(args);
         }
