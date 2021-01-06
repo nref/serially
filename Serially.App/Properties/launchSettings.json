@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Serially.App": {
+      "commandName": "Project",
+      "commandLineArgs": "repl COM5"
+    }
+  }
+}
