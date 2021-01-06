@@ -37,6 +37,7 @@ Serially.App can also just tail the device i.e. for logging.
 
 ## NuGet
 
+https://www.nuget.org/packages/Serially.Core/
 
 ## License
 
