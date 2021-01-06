@@ -14,6 +14,7 @@ namespace Serially.App
         .AppendLine()
         .AppendLine("Format: ")
         .AppendLine("  serially [action] [port]")
+        .AppendLine()
         .AppendLine("[action]")
         .AppendLine("  help: Show this message and exit")
         .AppendLine("  tail: Tail the given port")
