@@ -46,7 +46,7 @@ Basic ASCII key sequence escaping and mapping is provided. The following basic s
 - Arrow Keys (Up, Down, Right, Left)
 - Delete
 
-Using the ```tail``` option, serially.App can also just tail the device i.e. for logging.
+Using the ```tail``` option, Serially.App can also just tail the device i.e. for logging.
 
 ## PowerShell
 
