@@ -2,6 +2,7 @@ using Serially.Core.Streams;
 using System;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Serially.Core
@@ -136,17 +137,18 @@ namespace Serially.Core
     /// Reads all immediately available characters, based on the encoding,
     /// in both the stream and the input buffer of the SerialPort object.
     /// </summary>
-    public string ReadExisting() => IsOpen.Require(true, () =>
+    public async Task<string> ReadExistingAsync() => await IsOpen.Require(true, async () =>
       {
         byte[] buf = new byte[_streamCtrl.BytesToRead];
-        int bufRead = Read(buf, 0, buf.Length);
+        int bufRead = await ReadAsync(buf, 0, buf.Length, new CancellationTokenSource(1000).Token);
         return Encoding.GetString(buf, 0, bufRead);
       });
 
     /// <summary>
     /// Reads a number of bytes from the SerialPort input buffer and writes those bytes into a character array at a given offset.
     /// </summary>
-    public int Read(byte[] buffer, int offset, int count) => _stream.Read(buffer, offset, count);
+    public async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken ct) 
+      => await _stream.ReadAsync(buffer, offset, count, ct);
 
     /// <summary>
     /// Writes data to serial port output.

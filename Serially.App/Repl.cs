@@ -21,14 +21,14 @@ namespace Serially.App
     /// <summary>
     /// Print received data. Do not send console input.
     /// </summary>
-    public async Task Tail() => await Run(true);
+    public async Task Tail() => await RunAsync(true);
 
     /// <summary>
     /// Print received data and send console input.
     /// </summary>
-    public async Task Run() => await Run(false);
+    public async Task Run() => await RunAsync(false);
 
-    private async Task Run(bool tailOnly)
+    private async Task RunAsync(bool tailOnly)
     {
       try
       {
@@ -36,7 +36,7 @@ namespace Serially.App
 
         do
         {
-          LoopOnce(tailOnly);
+          await LoopOnceAsync(tailOnly);
 
         } while (_port.IsOpen);
       }
@@ -46,9 +46,9 @@ namespace Serially.App
       }
     }
 
-    private void LoopOnce(bool tailOnly)
+    private async Task LoopOnceAsync(bool tailOnly)
     {
-      Console.Write(_port.ReadExisting());
+      Console.Write(await _port.ReadExistingAsync());
 
       if (tailOnly)
       {

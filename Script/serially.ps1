@@ -2,6 +2,18 @@
 using namespace Serially.Core
 Add-Type -Path "./Serially.Core.dll"
 
+function Await-Task {
+    param (
+        [Parameter(ValueFromPipeline=$true, Mandatory=$true)]
+        $task
+    )
+
+    process {
+        while (-not $task.AsyncWaitHandle.WaitOne(200)) { }
+        $task.GetAwaiter().GetResult()
+    }
+}
+
 function try_open_port([SerialPort] $port, [SerialConfig] $config) 
 {
     try
@@ -45,7 +57,7 @@ function tail_log([System.String] $port_name)
         wait_for_port($port_name)
 
         do {
-            $buffer = $script:port.ReadExisting()
+            $buffer = $script:port.ReadExistingAsync() | Await-Task
             Write-Host -NoNewline $buffer
         } while ($script:port.IsOpen)
     }
@@ -131,7 +143,8 @@ function run_cli([System.String] $port_name)
 
         do 
         {
-            Write-Host -NoNewline $script:port.ReadExisting()
+            $received = $script:port.ReadExistingAsync() | Await-Task
+            Write-Host -NoNewline $received
 
             if (![Console]::KeyAvailable)
             {
