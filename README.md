@@ -46,7 +46,7 @@ Serially.Core is a pure .NET 5.0 library for serial communication.
 
 ## Serially.App
 
-```Serially.App.exe``` provides an a REPL (Read-Eval-Print Loop) for two-way communication with serial devices.
+```Serially.App.exe``` provides a REPL (Read-Eval-Print Loop) for two-way communication with serial devices.
 
 Basic ASCII key sequence escaping and mapping is provided. The following basic sequences are implemented so that basic REPL interaction works: 
 
