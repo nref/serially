@@ -32,13 +32,22 @@ namespace Serially.App
     {
       try
       {
-        await OpenPortAsync();
-
-        do
+        while (true)
         {
-          await LoopOnceAsync(tailOnly);
+          await OpenPortAsync();
 
-        } while (_port.IsOpen);
+          do
+          {
+            try
+            {
+              await LoopOnceAsync(tailOnly);
+            }
+            catch (Exception)
+            {
+            }
+
+          } while (_port.IsOpen);
+        }
       }
       finally
       {

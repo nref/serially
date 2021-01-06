@@ -1,6 +1,5 @@
 //==========================================================================================
 //
-//        namespace OpenNETCF.IO.Serial.CommAPI
 //        Copyright (c) 2003, OpenNETCF.org
 //
 //        This library is free software; you can redistribute it and/or modify it under
@@ -31,7 +30,7 @@ using System;
 using System.Collections.Specialized;
 using System.Runtime.InteropServices;
 
-namespace OpenNETCF.IO.Serial
+namespace Serially.Core
 {
   #region API structs and enums
 

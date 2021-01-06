@@ -1,6 +1,5 @@
 //==========================================================================================
 //
-//        OpenNETCF.IO.Serial.PortCapabilities
 //        Copyright (c) 2004, OpenNETCF.org
 //
 //        This library is free software; you can redistribute it and/or modify it under 
@@ -24,7 +23,7 @@
 using System;
 using System.Collections.Specialized;
 using System.Runtime.InteropServices;
-namespace OpenNETCF.IO.Serial
+namespace Serially.Core
 {
   //
   // Serial provider type.
@@ -285,7 +284,7 @@ namespace OpenNETCF.IO.Serial
     /// Indicates which services are supported by the port. SP_SERIALCOMM is specified for communication
     /// providers, including modem providers.
     /// </summary>
-    public IO.Serial.SEP dwServiceMask;
+    public SEP dwServiceMask;
     private uint dwReserved1;
     /// <summary>
     /// Specifies the maximum size, in bytes, of the driver's internal output buffer. A value of zero
@@ -302,11 +301,11 @@ namespace OpenNETCF.IO.Serial
     /// <summary>
     /// Specifies the maximum baud rate, in bits per second (bps).
     /// </summary>
-    public IO.Serial.BAUD dwMaxBaud;
+    public BAUD dwMaxBaud;
     /// <summary>
     /// Specifies the communication provider type.
     /// </summary>
-    public IO.Serial.PST dwProvSubType;
+    public PST dwProvSubType;
     private BitVector32 dwProvCapabilities;
     private BitVector32 dwSettableParams;
     private BitVector32 dwSettableBaud;
@@ -323,7 +322,7 @@ namespace OpenNETCF.IO.Serial
     /// </summary>
     [CLSCompliant(false)]
     public uint dwCurrentRxQueue;
-    private IO.Serial.CPS dwProvSpec1;
+    private CPS dwProvSpec1;
     private uint dwProvSpec2;
     private ushort wcProvChar;
 

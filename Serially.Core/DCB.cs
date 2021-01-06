@@ -1,6 +1,5 @@
 //==========================================================================================
 //
-//        namespace OpenNETCF.IO.Serial.DCB
 //        Copyright (c) 2003, OpenNETCF.org
 //
 //        This library is free software; you can redistribute it and/or modify it under 
@@ -27,7 +26,7 @@ using System.Collections.Specialized;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace OpenNETCF.IO.Serial
+namespace Serially.Core
 {
 
   //

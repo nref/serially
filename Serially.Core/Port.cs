@@ -1,6 +1,5 @@
 //==========================================================================================
 //
-//        OpenNETCF.IO.Serial.Port
 //        Copyright (c) 2003, OpenNETCF.org
 //
 //        This library is free software; you can redistribute it and/or modify it under
@@ -34,17 +33,10 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
-namespace OpenNETCF.IO.Serial
+namespace Serially.Core
 {
-  /// <summary>
-  /// Exceptions throw by the OpenNETCF.IO.Serial class
-  /// </summary>
   public class CommPortException : Exception
   {
-    /// <summary>
-    /// Default CommPortException
-    /// </summary>
-    /// <param name="desc"></param>
     public CommPortException(string desc) : base(desc) { }
   }
 
@@ -168,9 +160,9 @@ namespace OpenNETCF.IO.Serial
     {
       // create the API class based on the target
       if (System.Environment.OSVersion.Platform != PlatformID.WinCE)
-        m_CommAPI = new IO.Serial.WinCommAPI();
+        m_CommAPI = new WinCommAPI();
       else
-        m_CommAPI = new IO.Serial.CECommAPI();
+        m_CommAPI = new CECommAPI();
 
       // create a system event for synchronizing Closing
       closeEvent = m_CommAPI.CreateEvent(true, false, closeEventName);
@@ -376,7 +368,7 @@ namespace OpenNETCF.IO.Serial
       dcb.fOutX = portSettings.OutX;
       dcb.fOutxCtsFlow = portSettings.OutCTS;
       dcb.fOutxDsrFlow = portSettings.OutDSR;
-      dcb.fParity = (portSettings.BasicSettings.Parity == Parity.none) ? false : true;
+      dcb.fParity = (portSettings.BasicSettings.Parity == Parity.None) ? false : true;
       dcb.fRtsControl = (DCB.RtsControlFlags)portSettings.RTSControl;
       dcb.fTXContinueOnXoff = portSettings.TxContinueOnXOff;
       dcb.Parity = (byte)portSettings.BasicSettings.Parity;
@@ -488,7 +480,7 @@ namespace OpenNETCF.IO.Serial
       dcb.fOutX = portSettings.OutX;
       dcb.fOutxCtsFlow = portSettings.OutCTS;
       dcb.fOutxDsrFlow = portSettings.OutDSR;
-      dcb.fParity = (portSettings.BasicSettings.Parity == Parity.none) ? false : true;
+      dcb.fParity = (portSettings.BasicSettings.Parity == Parity.None) ? false : true;
       dcb.fRtsControl = (DCB.RtsControlFlags)portSettings.RTSControl;
       dcb.fTXContinueOnXoff = portSettings.TxContinueOnXOff;
       dcb.Parity = (byte)portSettings.BasicSettings.Parity;
@@ -846,7 +838,7 @@ namespace OpenNETCF.IO.Serial
         rxOverlapped = LocalAlloc(0x40, Marshal.SizeOf(o));
         o.Offset = 0;
         o.OffsetHigh = 0;
-        o.hEvent = rxevent.Handle;
+        o.hEvent = rxevent.SafeWaitHandle.DangerousGetHandle();
         Marshal.StructureToPtr(o, rxOverlapped, true);
       }
       else

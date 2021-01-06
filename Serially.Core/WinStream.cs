@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -7,7 +7,7 @@ namespace Serially.Core.Streams
 {
   public class WinStream : Stream, ISerialStreamCtrl
   {
-    internal OpenNETCF.IO.Serial.Port _port;
+    internal Port _port;
 
     public class Consts
     {
@@ -34,7 +34,7 @@ namespace Serially.Core.Streams
         int writeBufferSize,
         int writeTimeout)
     {
-      _port = new OpenNETCF.IO.Serial.Port(portName, readBufferSize, writeBufferSize);
+      _port = new Port(portName, readBufferSize, writeBufferSize);
 
       BaudRate = baudRate;
       DataBits = dataBits;
@@ -49,10 +49,10 @@ namespace Serially.Core.Streams
       StopBits = stopBits;
       // TODO:    WriteTimeout            = writeTimeout;
 
-      _port.DataReceived += new OpenNETCF.IO.Serial.Port.CommEvent(_port_DataReceived);
-      _port.OnError += new OpenNETCF.IO.Serial.Port.CommErrorEvent(_port_OnError);
-      _port.RingChange += new OpenNETCF.IO.Serial.Port.CommChangeEvent(_port_RingChange);
-      _port.RLSDChange += new OpenNETCF.IO.Serial.Port.CommChangeEvent(_port_RLSDChange);
+      _port.DataReceived += new Port.CommEvent(_port_DataReceived);
+      _port.OnError += new Port.CommErrorEvent(_port_OnError);
+      _port.RingChange += new Port.CommChangeEvent(_port_RingChange);
+      _port.RLSDChange += new Port.CommChangeEvent(_port_RLSDChange);
 
       if (!_port.Open())
         throw new UnauthorizedAccessException();
@@ -64,7 +64,7 @@ namespace Serially.Core.Streams
         throw new InvalidOperationException("Serial Port is not open");
     }
 
-    protected bool GetCommStatusFlag(OpenNETCF.IO.Serial.CommModemStatusFlags statusFlag)
+    protected bool GetCommStatusFlag(CommModemStatusFlags statusFlag)
     {
       AssertOpenPort();
 
@@ -188,7 +188,7 @@ namespace Serially.Core.Streams
     public int BaudRate
         {
             get => (int)_port.Settings.BaudRate;
-            set => _port.Settings.BaudRate = (OpenNETCF.IO.Serial.BaudRates)value;
+            set => _port.Settings.BaudRate = (BaudRates)value;
         }
 
     public bool BreakState
@@ -201,9 +201,9 @@ namespace Serially.Core.Streams
 
     public int BytesToWrite => _port.OutBufferCount;
 
-    public bool CDHolding => GetCommStatusFlag(OpenNETCF.IO.Serial.CommModemStatusFlags.MS_RLSD_ON);
+    public bool CDHolding => GetCommStatusFlag(CommModemStatusFlags.MS_RLSD_ON);
 
-    public bool CtsHolding => GetCommStatusFlag(OpenNETCF.IO.Serial.CommModemStatusFlags.MS_CTS_ON);
+    public bool CtsHolding => GetCommStatusFlag(CommModemStatusFlags.MS_CTS_ON);
 
     public int DataBits
         {
@@ -217,7 +217,7 @@ namespace Serially.Core.Streams
             set => _port.DetailedSettings.DiscardNulls = value;
         }
 
-    public bool DsrHolding => GetCommStatusFlag(OpenNETCF.IO.Serial.CommModemStatusFlags.MS_DSR_ON);
+    public bool DsrHolding => GetCommStatusFlag(CommModemStatusFlags.MS_DSR_ON);
 
     public bool DtrEnable
         {
@@ -226,14 +226,14 @@ namespace Serially.Core.Streams
         }
 
 
-    public static string[] GetPortNames()
+    public static List<string> GetPortNames()
     {
       string buffer;
       uint bufferSize = Consts.PortEnum_InitBufSize;
       uint res;
       int error;
 
-      ArrayList comPorts = new ArrayList();
+      var comPorts = new List<string>();
 
       do
       {
@@ -296,11 +296,11 @@ namespace Serially.Core.Streams
             (device.Length < 5 || char.IsDigit(device, 4)) &&
             (device.Length < 6 || char.IsDigit(device, 5)))
         {
-          comPorts.Add(string.Copy(device));    // avoid locking the original buffer string
+          comPorts.Add(device);    
         }
       }
 
-      return (string[])comPorts.ToArray(typeof(string));
+      return comPorts;
     }
 
 
@@ -308,13 +308,13 @@ namespace Serially.Core.Streams
     {
       get
       {
-        if (_port.DetailedSettings is OpenNETCF.IO.Serial.HandshakeNone)
+        if (_port.DetailedSettings is HandshakeNone)
           return Handshake.None;
-        else if (_port.DetailedSettings is OpenNETCF.IO.Serial.HandshakeCtsRts)
+        else if (_port.DetailedSettings is HandshakeCtsRts)
           return Handshake.RequestToSend;
-        else if (_port.DetailedSettings is OpenNETCF.IO.Serial.HandshakeXonXoff)
+        else if (_port.DetailedSettings is HandshakeXonXoff)
           return Handshake.XOnXOff;
-        else if (_port.DetailedSettings is OpenNETCF.IO.Serial.HandshakeDsrDtr)
+        else if (_port.DetailedSettings is HandshakeDsrDtr)
           return Handshake.RequestToSendXOnXOff;
         else
           throw new NotImplementedException();
@@ -322,21 +322,21 @@ namespace Serially.Core.Streams
       set
       {
         // Creating a new Handshaking object resets BasicSettings parameters.
-        OpenNETCF.IO.Serial.BasicPortSettings tempPortSettings = _port.DetailedSettings.BasicSettings;
+        BasicPortSettings tempPortSettings = _port.DetailedSettings.BasicSettings;
 
         switch (value)
         {
           case Handshake.None:
-            _port.DetailedSettings = new OpenNETCF.IO.Serial.HandshakeNone();
+            _port.DetailedSettings = new HandshakeNone();
             break;
           case Handshake.RequestToSend:
-            _port.DetailedSettings = new OpenNETCF.IO.Serial.HandshakeCtsRts();
+            _port.DetailedSettings = new HandshakeCtsRts();
             break;
           case Handshake.XOnXOff:
-            _port.DetailedSettings = new OpenNETCF.IO.Serial.HandshakeXonXoff();
+            _port.DetailedSettings = new HandshakeXonXoff();
             break;
           case Handshake.RequestToSendXOnXOff:
-            _port.DetailedSettings = new OpenNETCF.IO.Serial.HandshakeDsrDtr();
+            _port.DetailedSettings = new HandshakeDsrDtr();
             break;
           default:
             throw new NotImplementedException();
@@ -351,7 +351,7 @@ namespace Serially.Core.Streams
     public Parity Parity
         {
             get => (Parity)Convert.ToInt32(_port.Settings.Parity);
-            set => _port.Settings.Parity = (OpenNETCF.IO.Serial.Parity)Convert.ToInt32(value);
+            set => _port.Settings.Parity = (Parity)Convert.ToInt32(value);
         }
 
     public byte ParityReplace
@@ -395,35 +395,8 @@ namespace Serially.Core.Streams
 
     public StopBits StopBits
     {
-      get
-      {
-        switch (_port.Settings.StopBits)
-        {
-          default:
-            throw new InvalidOperationException();
-          case OpenNETCF.IO.Serial.StopBits.one:
-            return StopBits.One;
-          case OpenNETCF.IO.Serial.StopBits.onePointFive:
-            return StopBits.OnePointFive;
-          case OpenNETCF.IO.Serial.StopBits.two:
-            return StopBits.Two;
-        }
-      }
-      set
-      {
-        switch (value)
-        {
-          case StopBits.One:
-            _port.Settings.StopBits = OpenNETCF.IO.Serial.StopBits.one;
-            break;
-          case StopBits.OnePointFive:
-            _port.Settings.StopBits = OpenNETCF.IO.Serial.StopBits.onePointFive;
-            break;
-          case StopBits.Two:
-            _port.Settings.StopBits = OpenNETCF.IO.Serial.StopBits.two;
-            break;
-        }
-      }
+      get => _port.Settings.StopBits;
+      set => _port.Settings.StopBits = value;
     }
 
     public int WriteBufferSize
@@ -431,13 +404,6 @@ namespace Serially.Core.Streams
             get => _port.txBufferSize;
             set => throw new InvalidOperationException("Only available during port initialization");
         }
-
-    public int WriteTimeout
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
-
 
     public event SerialErrorEventHandler ErrorOccurred;
     public event SerialReceivedEventHandler Received;

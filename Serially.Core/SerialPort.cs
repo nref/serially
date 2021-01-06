@@ -1,5 +1,6 @@
 using Serially.Core.Streams;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -29,9 +30,20 @@ namespace Serially.Core
     private ISerialStreamCtrl _streamCtrl;
     private string _currentPortName;
 
+    private readonly IPortChangeWatcher _portChangeWatcher = new PortChangeWatcher();
+
     public SerialPort() 
     {
+      _portChangeWatcher.PortRemoved += HandlePortRemoved_;
+    }
 
+    private void HandlePortRemoved_(string port)
+    {
+      if (port == _currentPortName)
+      {
+        Console.WriteLine($"Port {port} removed");
+        Close();
+      }
     }
 
     /// <summary>
@@ -131,7 +143,7 @@ namespace Serially.Core
     /// <summary>
     /// Returns a list of all serial ports.
     /// </summary>
-    public static string[] GetPortNames() => WinStream.GetPortNames();
+    public static List<string> GetPortNames() => WinStream.GetPortNames();
 
     /// <summary>
     /// Reads all immediately available characters, based on the encoding,

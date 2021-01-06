@@ -1,6 +1,5 @@
 //==========================================================================================
 //
-//        namespace OpenNETCF.IO.Serial.PortSettings
 //        Copyright (c) 2003, OpenNETCF.org
 //
 //        This library is free software; you can redistribute it and/or modify it under 
@@ -24,7 +23,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace OpenNETCF.IO.Serial
+namespace Serially.Core
 {
   #region namespace enumerations
   /// <summary>
@@ -167,75 +166,6 @@ namespace OpenNETCF.IO.Serial
   }
 
   /// <summary>
-  /// Common serial handshaking protocols
-  /// </summary>
-  public enum Handshake
-  {
-    /// <summary>
-    /// No handshaking
-    /// </summary>
-    none,
-    /// <summary>
-    /// XOn/XOff handshaking
-    /// </summary>
-    XonXoff,
-    /// <summary>
-    /// CTS/RTS
-    /// </summary>
-    CtsRts,
-    /// <summary>
-    /// DSR/DTR
-    /// </summary>
-    DsrDtr
-  }
-
-  /// <summary>
-  /// Parity
-  /// </summary>
-  public enum Parity
-  {
-    /// <summary>
-    /// No parity
-    /// </summary>
-    none = 0,
-    /// <summary>
-    /// Odd parity
-    /// </summary>
-    odd = 1,
-    /// <summary>
-    /// Even parity
-    /// </summary>
-    even = 2,
-    /// <summary>
-    /// Mark parity
-    /// </summary>
-    mark = 3,
-    /// <summary>
-    /// Space parity
-    /// </summary>
-    space = 4
-  };
-
-  /// <summary>
-  /// Stop bits
-  /// </summary>
-  public enum StopBits
-  {
-    /// <summary>
-    /// One stop bit
-    /// </summary>
-    one = 0,
-    /// <summary>
-    /// 1.5 stop bits
-    /// </summary>
-    onePointFive = 1,
-    /// <summary>
-    /// Two stop bits
-    /// </summary>
-    two = 2
-  };
-
-  /// <summary>
   /// DTR Flow Control
   /// </summary>
   public enum DTRControlFlows
@@ -374,11 +304,11 @@ namespace OpenNETCF.IO.Serial
     /// <summary>
     /// Data Parity (default = none)
     /// </summary>
-    public Parity Parity = Parity.none;
+    public Parity Parity = Parity.None;
     /// <summary>
     /// Number of stop bits (default = 1)
     /// </summary>
-    public StopBits StopBits = StopBits.one;
+    public StopBits StopBits = StopBits.One;
   }
 
   /// <summary>
@@ -404,8 +334,8 @@ namespace OpenNETCF.IO.Serial
     {
       BasicSettings.BaudRate = BaudRates.CBR_19200;
       BasicSettings.ByteSize = 8;
-      BasicSettings.Parity = Parity.none;
-      BasicSettings.StopBits = StopBits.one;
+      BasicSettings.Parity = Parity.None;
+      BasicSettings.StopBits = StopBits.One;
 
       OutCTS = false;
       OutDSR = false;
