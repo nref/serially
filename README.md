@@ -2,7 +2,7 @@
 
 A REPL and tail for Serial Ports
 
-![](Images\repl.gif)
+![A GIF of the Serially REPL](https://github.com/slater1/serially/blob/main/Images/repl.gif)
 
     Serially: A REPL and tail for Serial Ports
 
