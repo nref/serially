@@ -55,6 +55,16 @@ Basic ASCII key sequence escaping and mapping is provided. The following basic s
 
 Using the ```tail``` option, Serially.App can also just tail the device i.e. for logging.
 
+The REPL detects when the COM port is removed e.g. if the serial device was physically unplugged.
+It automatically reconnects when the COM port is added again.
+
+```
+usb_cli:~$ Port COM5 removed
+Waiting for COM5 ...
+Opened COM5
+usb_cli:~$
+```
+
 ## NuGet
 
 https://www.nuget.org/packages/Serially.Core/
