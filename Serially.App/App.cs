@@ -1,5 +1,4 @@
-﻿using Serially.Core;
-using Serially.Core.Services;
+﻿using Serially.Core.Services;
 using System;
 using System.Text;
 using System.Threading.Tasks;
@@ -64,6 +63,7 @@ namespace Serially.App
         config.PortName = args[1];
 
         IReplService repl = new ReplService(port, config);
+        IRemoteReplService console = new RemoteReplService(repl).RunAsync();
 
         if (request_tail)
         {

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Serially.RemoteApp": {
+      "commandName": "Project",
+      "commandLineArgs": "dfu"
+    }
+  }
+}

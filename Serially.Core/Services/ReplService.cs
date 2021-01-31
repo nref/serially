@@ -7,6 +7,11 @@ namespace Serially.Core.Services
   public interface IReplService
   {
     /// <summary>
+    /// Write a character to the REPL
+    /// </summary>
+    Task WriteAsync(char c);
+
+    /// <summary>
     /// Print received data. Do not send console input.
     /// </summary>
     Task TailAsync();
@@ -29,6 +34,21 @@ namespace Serially.Core.Services
     {
       _port = port;
       _config = config;
+
+      port.Received += HandleReceived;
+    }
+
+    private async void HandleReceived(object sender, Models.Streams.SerialReceivedEventArgs e)
+    {
+      Console.Write(await _port.ReadExistingAsync());
+    }
+
+    public async Task WriteAsync(char c)
+    {
+      if (_port.IsOpen)
+      {
+        await _port.WriteCharAsync(c).ConfigureAwait(false);
+      }
     }
 
     public async Task TailAsync() => await RunAsync(true);
@@ -41,18 +61,7 @@ namespace Serially.Core.Services
         while (true)
         {
           await OpenPortAsync();
-
-          do
-          {
-            try
-            {
-              await LoopOnceAsync(tailOnly);
-            }
-            catch (Exception)
-            {
-            }
-
-          } while (_port.IsOpen);
+          await HandlePortOpened(tailOnly);
         }
       }
       finally
@@ -61,10 +70,23 @@ namespace Serially.Core.Services
       }
     }
 
+    private async Task HandlePortOpened(bool tailOnly)
+    {
+      do
+      {
+        try
+        {
+          await LoopOnceAsync(tailOnly);
+        }
+        catch (Exception)
+        {
+        }
+
+      } while (_port.IsOpen);
+    }
+
     private async Task LoopOnceAsync(bool tailOnly)
     {
-      Console.Write(await _port.ReadExistingAsync());
-
       if (tailOnly)
       {
         return;
@@ -78,7 +100,7 @@ namespace Serially.Core.Services
 
       foreach (char c in Mapping.Map(info))
       {
-        await _port.WriteCharAsync(c);
+        await WriteAsync(c).ConfigureAwait(false);
       }
     }
 
